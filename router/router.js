@@ -17,6 +17,7 @@ router.post('/api/register', (req, res) => {
     // console.log(params)
     const sqlStr = 'insert into users set?'
     conn.query(sqlStr, params, (err, results) => {
+        
         if (err) return res.json({
             err_code: '1',
             message: '用户名已存在',
@@ -59,7 +60,12 @@ router.get('/api/login', (req, res) => {
     // 根据用户名查询数据库
     const sqlStr = 'select * from users where username=?'
     conn.query(sqlStr, req.body.username, (err, results) => {
-        if (err) return res.json({
+        if(err) return res.json({
+            message:"数据库内部问题",
+            status:404
+        })
+        // 修改一个bug，这里不应该是err作为判断数据库的查询后续的依据 
+        if (results) return res.json({
             err_code: 1,
             message: '用户名或者密码不存在',
             affectedRows: 0
